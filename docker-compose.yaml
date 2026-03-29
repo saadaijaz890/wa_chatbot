@@ -32,6 +32,9 @@ services:
 
     env_file:
       - .env
+    environment:
+      # Enable Plus features: multi-session, S3 storage, full API dashboard
+      WAHA_VERSION: PLUS
 
 # NOTE: Only if you're using PostgreSQL to save sessions
 # https://waha.devlike.pro/docs/how-to/storages/#media---postgresql
@@ -77,26 +80,26 @@ services:
 
 # NOTE: Only if you're using S3 to save media files
 # https://waha.devlike.pro/docs/how-to/storages/#media---s3
-# Uncomment this block if you're using AWS S3
-#  minio:
-#    image: quay.io/minio/minio
-#    container_name: minio
-#    restart: always
-#    ports:
-#      - '127.0.0.1:9000:9000'
-#      - '127.0.0.1:9001:9001'
-#    environment:
-#      MINIO_REGION: 'eu-west-2'
-#      MINIO_ROOT_USER: 'minioadmin'
-#      MINIO_ROOT_PASSWORD: 'minioadmin'
-#    volumes:
-#      - minio_data:/data
-#    command: server /data --console-address ":9001"
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "100m"
-#        max-file: "10"
+# Set WAHA_MEDIA_STORAGE=S3 in .env to enable MinIO storage
+  minio:
+    image: quay.io/minio/minio
+    container_name: minio
+    restart: always
+    ports:
+      - '127.0.0.1:9000:9000'
+      - '127.0.0.1:9001:9001'
+    environment:
+      MINIO_REGION: 'eu-west-2'
+      MINIO_ROOT_USER: 'minioadmin'
+      MINIO_ROOT_PASSWORD: 'minioadmin'
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
 
 volumes:
   mongodb_data: {}

@@ -75,9 +75,9 @@ export class SessionManagerCore extends SessionManager implements OnModuleInit {
   // session - exists and running (or failed or smth)
   // null - stopped
   // undefined - removed
-  private session: WhatsappSession | DefaultSessionStatus;
-  private sessionConfig?: SessionConfig;
-  DEFAULT = 'default';
+  protected session: WhatsappSession | DefaultSessionStatus;
+  protected sessionConfig?: SessionConfig;
+  protected DEFAULT = 'default';
 
   protected readonly EngineClass: typeof WhatsappSession;
   protected events2: DefaultMap<WAHAEvents, SwitchObservable<any>>;
@@ -85,12 +85,12 @@ export class SessionManagerCore extends SessionManager implements OnModuleInit {
 
   constructor(
     config: WhatsappConfigService,
-    private engineConfigService: EngineConfigService,
-    private webjsEngineConfigService: WebJSEngineConfigService,
-    private wppEngineConfigService: WPPEngineConfigService,
+    protected engineConfigService: EngineConfigService,
+    protected webjsEngineConfigService: WebJSEngineConfigService,
+    protected wppEngineConfigService: WPPEngineConfigService,
     gowsConfigService: GowsEngineConfigService,
     log: PinoLogger,
-    private mediaStorageFactory: MediaStorageFactory,
+    protected mediaStorageFactory: MediaStorageFactory,
     @Inject(AppsService)
     appsService: IAppsService,
   ) {
@@ -129,7 +129,7 @@ export class SessionManagerCore extends SessionManager implements OnModuleInit {
     }
   }
 
-  private onlyDefault(name: string) {
+  protected onlyDefault(name: string) {
     if (name !== this.DEFAULT) {
       throw new OnlyDefaultSessionIsAllowed(name);
     }
@@ -149,7 +149,7 @@ export class SessionManagerCore extends SessionManager implements OnModuleInit {
     this.startPredefinedSessions();
   }
 
-  private async clearStorage() {
+  protected async clearStorage() {
     const storage = await this.mediaStorageFactory.build(
       'all',
       this.log.logger.child({ name: 'Storage' }),
@@ -253,7 +253,7 @@ export class SessionManagerCore extends SessionManager implements OnModuleInit {
     };
   }
 
-  private updateSession() {
+  protected updateSession() {
     if (!this.session) {
       return;
     }
@@ -323,7 +323,7 @@ export class SessionManagerCore extends SessionManager implements OnModuleInit {
   /**
    * Combine per session and global webhooks
    */
-  private getWebhooks() {
+  protected getWebhooks() {
     let webhooks: WebhookConfig[] = [];
     if (this.sessionConfig?.webhooks) {
       webhooks = webhooks.concat(this.sessionConfig.webhooks);
@@ -399,7 +399,7 @@ export class SessionManagerCore extends SessionManager implements OnModuleInit {
     ];
   }
 
-  private async fetchEngineInfo() {
+  protected async fetchEngineInfo() {
     const session = this.session as WhatsappSession;
     // Get engine info
     let engineInfo = {};
